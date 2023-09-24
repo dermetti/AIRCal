@@ -203,40 +203,40 @@ def ics_exporter(schedule, name, month, year):
 
 
 def pdf_exporter(schedule, dates, name, month, year):
-        pdf = FPDF(orientation="L")
-        pdf.add_page()
-        pdf.set_font('helvetica', 'B', 22)
-        pdf.set_y(20)
-        pdf.cell(txt=f"Schedule for {name}, {month} {year}", center=True)
-        pdf.set_y(70)
-        pdf.set_font('helvetica', '', 12)
-        data = [dates, schedule]
-        with pdf.table(text_align="CENTER", borders_layout="INTERNAL") as table:
-            for data_row in data:
-                row = table.row()
-                for datum in data_row:
-                    row.cell(datum)
-        pdf.set_y(120)
-        pdf.set_font('helvetica', 'B', 16)
-        pdf.cell(txt=f"Legend", center=True)
-        pdf.set_y(140)
-        pdf.set_font('helvetica', '', 12)
-        shifts = list(set(schedule))
-        shifts.sort()
-        shifts = [i for i in shifts if i not in ["U", "x", "EZ", "IW", "*9", "*C"]]
-        width = len(shifts)
-        times = []
-        for shift in shifts:
-            t = allowed_shifts[shift]
-            times.append(f"{t[0]} - {t[1]}")
-        data = [shifts, times]
-        with pdf.table(width=(width * 30), text_align="CENTER", borders_layout="INTERNAL") as table:
-            for data_row in data:
-                row = table.row()
-                for datum in data_row:
-                    row.cell(datum)
-        pdf.output(f"Schedule_{name}_{month}_{year}.pdf")
-
+    pdf = FPDF(orientation="L")
+    pdf.add_page()
+    pdf.set_font('helvetica', 'B', 22)
+    pdf.set_y(20)
+    pdf.cell(txt=f"Schedule for {name}, {month} {year}", center=True)
+    pdf.set_y(70)
+    pdf.set_font('helvetica', '', 12)
+    data = [dates, schedule]
+    with pdf.table(text_align="CENTER", borders_layout="INTERNAL") as table:
+        for data_row in data:
+            row = table.row()
+            for datum in data_row:
+                row.cell(datum)
+    pdf.set_y(120)
+    pdf.set_font('helvetica', 'B', 16)
+    pdf.cell(txt=f"Legend", center=True)
+    pdf.set_y(140)
+    pdf.set_font('helvetica', '', 12)
+    shifts = list(set(schedule))
+    shifts.sort()
+    shifts = [i for i in shifts if i not in ["U", "x", "EZ", "IW", "*9", "*C"]]
+    width = len(shifts)
+    times = []
+    for shift in shifts:
+        t = allowed_shifts[shift]
+        times.append(f"{t[0]} - {t[1]}")
+    data = [shifts, times]
+    with pdf.table(width=(width * 30), text_align="CENTER", borders_layout="INTERNAL") as table:
+        for data_row in data:
+            row = table.row()
+            for datum in data_row:
+                row.cell(datum)
+    pdf.output(f"Schedule_{name}_{month}_{year}.pdf")
+				  
 
 if __name__=="__main__":
     main()
