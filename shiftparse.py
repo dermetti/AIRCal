@@ -57,7 +57,7 @@ months_eng = {
 
 }
 
-# open Schedule pdf file
+
 def main():
     table, month_raw, year_raw, names, dates = parse_pdf(sys.argv[1])
     month, year = check_date(month_raw, year_raw)
@@ -236,9 +236,6 @@ def pdf_exporter(schedule, dates, name, month, year):
                 for datum in data_row:
                     row.cell(datum)
         pdf.output(f"Schedule_{name}_{month}_{year}.pdf")
-
-
-
 
 
 if __name__=="__main__":
