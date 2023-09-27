@@ -57,7 +57,7 @@ months_eng = {
 
 }
 
-
+# main function
 def main():
     table, month_raw, year_raw, names, dates = parse_pdf(sys.argv[1])
     month, year = check_date(month_raw, year_raw)
