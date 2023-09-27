@@ -66,6 +66,7 @@ def main():
 
 
 
+# parser with pdfplumber
 def parse_pdf(f):
     try:
         with pdfplumber.open(f) as pdf:
