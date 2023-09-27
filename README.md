@@ -41,8 +41,8 @@ The function will then call pdf_exporter() and ics_exporter() if applicable.
 
 ### ics_exporter():
 The ics_exporter() function takes as arguments the validated list of shifts, the name of the user, the validated month and year. A calendar is created using [Ics.py]( https://pypi.org/project/ics/). Each shift is added to the calendar as an event. Days off ("x" shifts) are not added. Shifts that have no associated start and end times are added as full day events. Shifts with start and end times have these times converted to a [datetime](https://docs.python.org/3/library/datetime.html#module-datetime) object which is then converted to UTC with [pytz](https://pypi.org/project/pytz/). These shifts are then added as events with a start and end time.
-The .ics file is then named as "Schedule_{user_name}_{month}_{year}.ics" and exported.
+The .ics file is then named as "Schedule_{user_name}\_{month}_{year}.ics" and exported.
 
 ### pdf_exporter():
 The pdf_exporter() function takes as arguments the validated list of shifts, the list of days, the name of the user, the validated month and year. Using [fpdf2]( https://pypi.org/project/fpdf2/) a PDF file is created with the individual schedule of the user and a legend containing the abbreviations of the shifts the user is assigned to as well as their start and end times (shifts with no associated times are ignored).
-The PDF file is then named as "Schedule_{user_name}_{month}_{year}.pdf" and exported.
+The PDF file is then named as "Schedule_{user_name}\_{month}_{year}.pdf" and exported.
