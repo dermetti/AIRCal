@@ -42,27 +42,29 @@ allowed_shifts = {'*9': [],
 
 }
 months_eng = {
-    "January": "01",
-    "February": "02",
-    "March": "03",
+    "Januar": "01",
+    "Februar": "02",
+    "März": "03",
     "April": "04",
-    "May": "05",
-    "June": "06",
-    "July": "07",
+    "Mai": "05",
+    "Juni": "06",
+    "Juli": "07",
     "August": "08",
     "September": "09",
-    "October": "10",
+    "Oktober": "10",
     "November": "11",
-    "December": "12"
+    "Dezember": "12"
 
 }
 
 # main function
 def main():
-    table, month_raw, year_raw, names, dates = parse_pdf(sys.argv[1])
-    month, year = check_date(month_raw, year_raw)
-    schedule, name = extract_schedule(input("What is your name? ").strip().title(), table, names, dates)
-    exporter(schedule, dates, name, month, year)
+    file = "AIR-Dienstplan_2023_11[12022].pdf"
+    name = "von Medem"
+    table, month, year, names = parse_pdf(file)
+    index = check_name(name, names)
+    shifts, bad_shifts = extract_schedule(table, index)
+    #exporter(schedule, name, month, year)
 
 
 
@@ -71,107 +73,81 @@ def parse_pdf(f):
     try:
         with pdfplumber.open(f) as pdf:
             page = pdf.pages[0]
-            table = page.extract_table({"vertical_strategy": "lines", "horizontal_strategy": "lines"})
+            table_raw = page.extract_table({"vertical_strategy": "lines", "horizontal_strategy": "lines"})
+            table=[]
+            for line in table_raw:
+                if line[0]:
+                    table.append(line)
             text = page.extract_text_simple(x_tolerance=3, y_tolerance=3)
-            matches = re.search(r"Schedule (\w.+) (\d{4})", text)
-            dates = table[0][2:]
+            matches = re.search(r"Dienstplan (\w.+) (\d{4})", text)
             names = []
-            for line in table[2:]:
-                names.append(line[0])
-            month_raw, year_raw = matches.groups()
-            return table, month_raw, year_raw, names, dates
+            for line in table:
+                if line[0]:
+                    name = line[0]
+                    name = name.casefold()[0:7]
+                    if name[0:3] != "von":
+                        name = name.split()[0]
+                    names.append(name)
+            month, year = matches.groups()
+            return table, month, year, names
     except:
-        sys.exit("File does not exist or is not a pdf")
+        return None, None, None, None
 
 
-def check_date(month, year):
-    curr_year = date.today().year
-    if month not in months_eng:
-        while True:
-            month = input(f"Month | {month} | is wrong, input correct month of schedule: ").title().strip()
-            if month in months_eng:
-                break
-            else:
-                continue
-    if year != str(curr_year) and year != str(curr_year + 1):
-        while True:
-            y = input(f"Year | {year} | may be wrong, input correct year of schedule: ").strip()
-            if len(y) == 4 and y.isdigit():
-                year = int(y)
-                break
-            else:
-                continue
-    return month, year
+def check_name(name, names):
+
+    table_name = name.strip().casefold()[0:7]
+    if table_name in names and names.count(table_name) == 1:
+        return names.index(table_name)
+    else:
+        return None
+    
+    
+
+def extract_schedule(table, index):
+    days = []
+    for line in table:
+        days.append(len(line[4:-2]))
+    corr_days = max(set(days), key = days.count)
+    shifts = table[index][4:-2]
+    if len(shifts) != corr_days:
+        print("Nicht alle Tage konnten ausgelesen werden! ")
+    shifts, bad_shifts = check_data(shifts)
+    return shifts, bad_shifts
+    
 
 
-def extract_schedule(name, t, names, dates):
-    if name not in names:
-        print("An error has occured, let's try again")
-        main()
-    for line in t:
-        if name == line[0]:
-            shifts = check_data(line[2:], dates)
-            print(tabulate([shifts], headers=dates, tablefmt="rounded_grid"))
-            while True:
-                answer = input("Does this look correct? [y/n] ").strip().casefold()
-                if answer == "y":
-                    return shifts, name
-                elif answer == "n":
-                    print("An error has occured, let's try again")
-                    main()
-                else:
-                    continue
 
-
-def check_data(shifts, days):
+def check_data(shifts):
     i = -1
+    bad_shifts = {}
     for shift in shifts:
         i += 1
         if shift not in allowed_shifts:
             while True:
                 if shift[0:2] in allowed_shifts:
-                    corr_shift = shift[0:2]
+                    shifts[i] = shift[0:2]
                     break
                 elif shift[0:1] in allowed_shifts:
-                    corr_shift = shift[0:1]
+                    shifts[i] = shift[0:1]
                     break
                 elif shift.upper() in allowed_shifts:
-                    corr_shift = shift.upper()
-                    break
-                corr_shift = input(f"Shift | {shift} | on the {days[i]} is not correct. What is your shift on that day? ")
-                if corr_shift in allowed_shifts:
-                    break
-                elif corr_shift.upper() in allowed_shifts:
-                    corr_shift = corr_shift.upper()
+                    shifts[i] = shift.upper()
                     break
                 else:
-                    continue
-            shifts[i] = corr_shift
-    return shifts
+                    bad_shifts[(i + 1)] = shift
+                    break
+    return shifts, bad_shifts
 
 
-def exporter(schedule, dates, name, month, year):
-    while True:
-        export_options = input("Do you want to export your schedule as a PDF [p], ICS [i] or both [b]? ").casefold().strip()
-        if export_options in ["p", "i", "b"]:
-            break
-        else:
-            continue
-    if export_options == "p":
-        pdf_exporter(schedule, dates, name, month, year)
-    elif export_options == "i":
-        ics_exporter(schedule, name, month, year)
-    elif export_options == "b":
-        pdf_exporter(schedule, dates, name, month, year)
-        ics_exporter(schedule, name, month, year)
 
 
-def ics_exporter(schedule, name, month, year):
+def ics_exporter(shifts, name, month, year):
     c = Calendar(creator="shiftparse")
     i = 1
     local = pytz.timezone("Europe/Berlin")
     now = datetime.now()
-    for shift in schedule:
+    for shift in shifts:
         if shift == "x":
             i += 1
             continue
