@@ -10,7 +10,7 @@ import sys
 
 allowed_shifts = {'*9': [],
                   '*C': [],
-                  'AK': ["07:00", "16:00"],
+                  'AK': ["07:00", "9"],
                   'BH': ["07:30", "20:15"],
                   'BN': ["19:30", "08:00"],
                   'BO': ["07:30", "16:00"],
@@ -41,7 +41,7 @@ allowed_shifts = {'*9': [],
                   'x': []
 
 }
-months_eng = {
+months_de = {
     "Januar": "01",
     "Februar": "02",
     "März": "03",
@@ -144,9 +144,10 @@ def check_data(shifts):
 
 def ics_exporter(shifts, name, month, year):
     c = Calendar(creator="shiftparse")
-    i = 1
+    i = 0
     local = pytz.timezone("Europe/Berlin")
     now = datetime.now()
+    start_day = datetime.strptime(f"{year}-{months_de[month]}-01", "%Y-%m-%d")
     for shift in shifts:
         if shift == "x":
             i += 1
@@ -154,22 +155,18 @@ def ics_exporter(shifts, name, month, year):
         else:
             e = Event()
             e.name = shift
+            curr_day = start_day + timedelta(days=i)
             if allowed_shifts[shift] != []:
-                start = datetime.strptime(f"{year}-{months_eng[month]}-{i:02d} {allowed_shifts[shift][0]}", "%Y-%m-%d %H:%M")
+                #start = datetime.strptime(f"{year}-{months_de[month]}-{i:02d} {allowed_shifts[shift][0]}", "%Y-%m-%d %H:%M")
+                start = datetime.strptime(f"{curr_day.date()} {allowed_shifts[shift][0]}", "%Y-%m-%d %H:%M")
                 start_de = local.localize(start, is_dst=None)
                 start_utc = start_de.astimezone(pytz.utc)
-                end = datetime.strptime(f"{year}-{months_eng[month]}-{i:02d} {allowed_shifts[shift][1]}", "%Y-%m-%d %H:%M")
-                end_de = local.localize(end, is_dst=None)
-                end_utc = end_de.astimezone(pytz.utc)
+                end_utc = start_utc + timedelta(float(allowed_shifts[shift][1]))
                 e.created = (now)
                 e.begin = f"{start_utc}"
-                if start.time() > end.time():
-                    end_utc = end_utc + timedelta(days=1)
-                    e.end = f"{end_utc}"
-                else:
-                    e.end = f"{end_utc}"
+                e.end = f"{end_utc}"
             else:
-                e.begin = f"{year}-{months_eng[month]}-{i:02d} 00:00:00"
+                e.begin = curr_day
                 e.created = (now)
                 e.make_all_day()
             c.events.add(e)
