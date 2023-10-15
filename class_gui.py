@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter import ttk
 from AIRCal import *
+from ics import Calendar, Event
 
 
 class Schedule:
@@ -108,7 +109,6 @@ class Input_Frame(tk.Frame):
                 else:
                     schedule.shifts, schedule.bad_shifts = extract_schedule(schedule.table, schedule.index)
                     if schedule.bad_shifts:
-                        print(schedule.bad_shifts)
                         self.parent.raise_frame(self.parent.shifts_frame)
                     else:
                         self.parent.raise_frame(self.parent.export_frame)
@@ -178,8 +178,6 @@ class Export_Frame(tk.Frame):
         def table(self, *args):
             self.parent.reconfigure()
             self.label2["text"]=f"Dienstplan für {schedule.month} {schedule.year}"
-            print(schedule.shifts)
-
             for i in range(2):
                 for j in range(len(schedule.shifts)):
                     if i == 0:
@@ -190,7 +188,10 @@ class Export_Frame(tk.Frame):
                         l.grid(row=i, column=j, sticky="nsew")
 
         def export(self):
-            pass
+            c = ics_exporter(schedule.shifts, schedule.name, schedule.month, schedule.year)
+            #with open(f"Dienstplan_{name}_{month}_{year}.ics", "w") as file:
+            #    file.write(c.serialize())
+            file = fd.asksaveasfile(title="Dienstplan speichern", initialdir="/", initialfile=f"Dienstplan_{schedule.name}_{schedule.month}_{schedule.year}", filetypes=[("ICS Datei", "*.ics")], defaultextension=".ics")
 
 
 class Shifts_Frame(tk.Frame):
@@ -233,9 +234,7 @@ class Shifts_Frame(tk.Frame):
         def confirm(self, s, combobox):
             shift = combobox.get()
             index = s - 1
-            print(schedule.shifts)
             schedule.shifts[index] = shift
-            print(schedule.shifts)
             del schedule.bad_shifts[s]
             if not schedule.bad_shifts:
                 self.parent.raise_frame(self.parent.export_frame)

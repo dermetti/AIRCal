@@ -37,11 +37,21 @@ allowed_shifts = {'*9': [],
                   'x': []
 }
 
-time = "08:30"
-duration="24.5"
-start_day = datetime.strptime(f"2023-10-01", "%Y-%m-%d")
-start_day = start_day + timedelta(days=1)
-start_day2 = datetime.strptime(f"{start_day.date()} {time}", "%Y-%m-%d %H:%M")
-print(start_day2)
-end_day = start_day2 + timedelta(hours=float(duration))
-print(end_day)
+#time = "08:30"
+#duration="24.5"
+#start_day = datetime.strptime(f"2023-10-01", "%Y-%m-%d")
+#start_day = start_day + timedelta(days=1)
+#start_day2 = datetime.strptime(f"{start_day.date()} {time}", "%Y-%m-%d %H:%M")
+#print(start_day2)
+#end_day = start_day2 + timedelta(hours=float(duration))
+#print(end_day)
+
+for shift in allowed_shifts:
+    if allowed_shifts[shift] != []:
+        start = datetime.strptime(f"{allowed_shifts[shift][0]}", "%H:%M")
+        end = datetime.strptime(f"{allowed_shifts[shift][1]}", "%H:%M")
+        delta = end - start
+        print(shift, delta)
+
+    else:
+        continue
