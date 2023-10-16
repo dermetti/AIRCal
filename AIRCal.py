@@ -1,11 +1,9 @@
 import pdfplumber
-from tabulate import tabulate
 import re
 from fpdf import FPDF
 from ics import Calendar, Event
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 import pytz
-import sys
 
 
 allowed_shifts = {'*9': [],
@@ -57,16 +55,6 @@ months_de = {
 
 }
 
-# main function
-def main():
-    file = "AIR-Dienstplan_2023_11[12022].pdf"
-    name = "von Medem"
-    table, month, year, names = parse_pdf(file)
-    index = check_name(name, names)
-    shifts, bad_shifts = extract_schedule(table, index)
-    #exporter(schedule, name, month, year)
-
-
 
 # parser with pdfplumber
 def parse_pdf(f):
@@ -95,14 +83,12 @@ def parse_pdf(f):
 
 
 def check_name(name, names):
-
     table_name = name.strip().casefold()[0:7]
     if table_name in names and names.count(table_name) == 1:
         return names.index(table_name)
     else:
         return None
-    
-    
+     
 
 def extract_schedule(table, index):
     days = []
@@ -115,8 +101,6 @@ def extract_schedule(table, index):
     shifts, bad_shifts = check_data(shifts)
     return shifts, bad_shifts
     
-
-
 
 def check_data(shifts):
     i = -1
@@ -140,8 +124,6 @@ def check_data(shifts):
     return shifts, bad_shifts
 
 
-
-
 def ics_exporter(shifts, name, month, year):
     c = Calendar(creator="shiftparse")
     i = 0
@@ -157,11 +139,10 @@ def ics_exporter(shifts, name, month, year):
             e.name = shift
             curr_day = start_day + timedelta(days=i)
             if allowed_shifts[shift] != []:
-                #start = datetime.strptime(f"{year}-{months_de[month]}-{i:02d} {allowed_shifts[shift][0]}", "%Y-%m-%d %H:%M")
                 start = datetime.strptime(f"{curr_day.date()} {allowed_shifts[shift][0]}", "%Y-%m-%d %H:%M")
                 start_de = local.localize(start, is_dst=None)
                 start_utc = start_de.astimezone(pytz.utc)
-                end_utc = start_utc + timedelta(float(allowed_shifts[shift][1]))
+                end_utc = start_utc + timedelta(hours=float(allowed_shifts[shift][1]))
                 e.created = (now)
                 e.begin = f"{start_utc}"
                 e.end = f"{end_utc}"
@@ -172,10 +153,6 @@ def ics_exporter(shifts, name, month, year):
             c.events.add(e)
             i += 1
     return c
-    #with open(f"Dienstplan_{name}_{month}_{year}.ics", "w") as file:
-    #    file.write(c.serialize())
-
-
 
 
 def pdf_exporter(schedule, dates, name, month, year):
@@ -212,7 +189,3 @@ def pdf_exporter(schedule, dates, name, month, year):
             for datum in data_row:
                 row.cell(datum)
     pdf.output(f"Schedule_{name}_{month}_{year}.pdf")
-				  
-
-if __name__=="__main__":
-    main()

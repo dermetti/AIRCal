@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter import ttk
 from AIRCal import *
-from ics import Calendar, Event
 
 
 class Schedule:
@@ -18,8 +17,6 @@ class Schedule:
         self.bad_shifts = bad_shifts
 
 schedule = Schedule()
-
-
 
 
 class App(tk.Tk):
@@ -41,7 +38,6 @@ class App(tk.Tk):
         self.export_frame = Export_Frame(self)
         self.shifts_frame = Shifts_Frame(self)
         
-
     def raise_frame(self, frame):
         frame.configure(highlightbackground="grey", highlightthickness=1)
         frame.grid(row=1, column=0, sticky="nsew", pady=10, padx=10)
@@ -189,9 +185,14 @@ class Export_Frame(tk.Frame):
 
         def export(self):
             c = ics_exporter(schedule.shifts, schedule.name, schedule.month, schedule.year)
-            #with open(f"Dienstplan_{name}_{month}_{year}.ics", "w") as file:
-            #    file.write(c.serialize())
-            file = fd.asksaveasfile(title="Dienstplan speichern", initialdir="/", initialfile=f"Dienstplan_{schedule.name}_{schedule.month}_{schedule.year}", filetypes=[("ICS Datei", "*.ics")], defaultextension=".ics")
+            file_path = fd.asksaveasfilename(title="Dienstplan speichern", initialdir="/", initialfile=f"Dienstplan_{schedule.name}_{schedule.month}_{schedule.year}", filetypes=[("ICS Datei", "*.ics")], defaultextension=".ics")
+            cal = c.serialize().split()      
+            if file_path:          
+                with open(file_path, "w", encoding="utf-8") as file:
+                    for line in cal:
+                        file.write(line)
+                        file.write("\n")
+            self.parent.destroy()
 
 
 class Shifts_Frame(tk.Frame):
@@ -221,9 +222,6 @@ class Shifts_Frame(tk.Frame):
             combobox['state'] = 'readonly'
             combobox.grid(column=0, row=1, pady=10, padx=5, sticky="e")
 
-            #button1 = ttk.Button(self.frame, text="Bestätigen", command=lambda: self.confirm())
-            #button1.grid(column=1, row=1, pady=10, padx= 5, sticky="w")
-
             for s in schedule.bad_shifts:
                 label1["text"]=f"Schicht | {schedule.bad_shifts[s]} | am {s}. {schedule.month} wurde nicht erkannt, bitte korrekte Schicht eingeben:"
                 button1 = ttk.Button(self.frame, text="Bestätigen", command=lambda: self.confirm(s, combobox))
@@ -240,11 +238,6 @@ class Shifts_Frame(tk.Frame):
                 self.parent.raise_frame(self.parent.export_frame)
             else:
                 self.corr()
-            
-            
-
-
-
 
 
 if __name__ == "__main__":
