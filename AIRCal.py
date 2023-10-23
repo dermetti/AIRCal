@@ -107,6 +107,18 @@ def check_data(shifts):
     bad_shifts = {}
     for shift in shifts:
         i += 1
+        if shift and " " in shift:
+            c = i
+            com_shifts = shift.split()
+            print(com_shifts)
+            for s in com_shifts:
+                shifts[c] = s
+                c += 1
+    i = -1
+    for shift in shifts:
+        i += 1
+        if not shift:
+            shift = "?"
         if shift not in allowed_shifts:
             while True:
                 if shift[0:2] in allowed_shifts:

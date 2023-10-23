@@ -104,6 +104,7 @@ class Input_Frame(tk.Frame):
                     self.parent.raise_frame(self.parent.name_frame)
                 else:
                     schedule.shifts, schedule.bad_shifts = extract_schedule(schedule.table, schedule.index)
+                    print(schedule.shifts, schedule.bad_shifts)
                     if schedule.bad_shifts:
                         self.parent.raise_frame(self.parent.shifts_frame)
                     else:
@@ -208,12 +209,16 @@ class Shifts_Frame(tk.Frame):
             self.frame = tk.Frame(master=self)
             self.frame.grid(column=0, row=1, pady=10)
 
+            self.error_message = tk.Label(self, text="", font=("Helvetica", 9), fg="red")
+            self.error_message.grid(column=0, row=2, pady=10)
+
             # variables
             self.parent = parent
             corr_shifts = [i for i in allowed_shifts]
             self.sort_corr_shifts = sorted(corr_shifts)
 
         def corr(self, *args):
+            self.error_message["text"] = ""
 
             label1 = tk.Label(self.frame, text="", font=("Helvetica", 9))
             label1.grid(column=0, row=0, pady=10, columnspan=2)
@@ -231,13 +236,16 @@ class Shifts_Frame(tk.Frame):
                 
         def confirm(self, s, combobox):
             shift = combobox.get()
-            index = s - 1
-            schedule.shifts[index] = shift
-            del schedule.bad_shifts[s]
-            if not schedule.bad_shifts:
-                self.parent.raise_frame(self.parent.export_frame)
+            if not shift:
+                self.error_message["text"] = "Keine Schicht ausgewählt"
             else:
-                self.corr()
+                index = s - 1
+                schedule.shifts[index] = shift
+                del schedule.bad_shifts[s]
+                if not schedule.bad_shifts:
+                    self.parent.raise_frame(self.parent.export_frame)
+                else:
+                    self.corr()
 
 
 if __name__ == "__main__":
