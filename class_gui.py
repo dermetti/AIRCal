@@ -104,7 +104,6 @@ class Input_Frame(tk.Frame):
                     self.parent.raise_frame(self.parent.name_frame)
                 else:
                     schedule.shifts, schedule.bad_shifts = extract_schedule(schedule.table, schedule.index)
-                    print(schedule.shifts, schedule.bad_shifts)
                     if schedule.bad_shifts:
                         self.parent.raise_frame(self.parent.shifts_frame)
                     else:

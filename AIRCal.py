@@ -110,7 +110,6 @@ def check_data(shifts):
         if shift and " " in shift:
             c = i
             com_shifts = shift.split()
-            print(com_shifts)
             for s in com_shifts:
                 shifts[c] = s
                 c += 1
