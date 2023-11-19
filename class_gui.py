@@ -24,6 +24,7 @@ class App(tk.Tk):
         super().__init__()
         self.title("AIRCal")
         self.geometry("600x400")
+        self.iconbitmap("AIRCal_icon.ico")
         self.resizable(False, False)
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
