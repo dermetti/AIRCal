@@ -200,51 +200,54 @@ class Shifts_Frame(tk.Frame):
         def __init__(self, parent):
             super().__init__(parent)
             self.grid_columnconfigure(0, weight=1)
+            self.grid_columnconfigure(1, weight=1)
 
             self.bind("<Expose>", self.corr)
-
-            label1 = tk.Label(self, text="Es konnten nicht alle Schichten ausgelesen werden, bitte korrigieren", font=("Helvetica", 11, "bold"), fg="red")
-            label1.grid(column=0, row=0, pady=10)
-
-            self.frame = tk.Frame(master=self)
-            self.frame.grid(column=0, row=1, pady=10)
-
-            self.error_message = tk.Label(self, text="", font=("Helvetica", 9), fg="red")
-            self.error_message.grid(column=0, row=2, pady=10)
 
             # variables
             self.parent = parent
             corr_shifts = [i for i in allowed_shifts]
             self.sort_corr_shifts = sorted(corr_shifts)
 
-        def corr(self, *args):
-            self.error_message["text"] = ""
-
-            label1 = tk.Label(self.frame, text="", font=("Helvetica", 9))
+            label1 = tk.Label(self, text="Es konnten nicht alle Schichten ausgelesen werden, bitte korrigieren", font=("Helvetica", 11, "bold"), fg="red")
             label1.grid(column=0, row=0, pady=10, columnspan=2)
 
-            combobox = ttk.Combobox(self.frame, values=self.sort_corr_shifts)
-            combobox['state'] = 'readonly'
-            combobox.grid(column=0, row=1, pady=10, padx=5, sticky="e")
+            self.label2 = tk.Label(self, text="", font=("Helvetica", 9))
+            self.label2.grid(column=0, row=1, pady=10, columnspan=2)
 
-            for s in schedule.bad_shifts:
-                label1["text"]=f"Schicht | {schedule.bad_shifts[s]} | am {s}. {schedule.month} wurde nicht erkannt, bitte korrekte Schicht eingeben:"
-                button1 = ttk.Button(self.frame, text="Bestätigen", command=lambda: self.confirm(s, combobox))
-                button1.grid(column=1, row=1, pady=10, padx= 5, sticky="w")
-                break
+            self.combobox = ttk.Combobox(self, values=self.sort_corr_shifts)
+            self.combobox['state'] = 'readonly'
+            self.combobox.grid(column=0, row=2, pady=10, padx=5, sticky="e")  
+
+            button1 = ttk.Button(self, text="Bestätigen", command=lambda: self.confirm(self.combobox))
+            button1.grid(column=1, row=2, pady=10, padx= 5, sticky="w")          
+
+            self.error_message = tk.Label(self, text="", font=("Helvetica", 9), fg="red")
+            self.error_message.grid(column=0, row=3, pady=10, columnspan=2)
+
+
+        def corr(self, *args):
+            self.error_message["text"] = ""
+            try:
+                s = int(list(schedule.bad_shifts.keys())[0])
+                self.label2["text"]=f"Schicht | {schedule.bad_shifts[s]} | am {s}. {schedule.month} wurde nicht erkannt, bitte korrekte Schicht eingeben:"
+            except:
+                pass
 
                 
-        def confirm(self, s, combobox):
+        def confirm(self, combobox):
             shift = combobox.get()
             if not shift:
                 self.error_message["text"] = "Keine Schicht ausgewählt"
             else:
+                s = int(list(schedule.bad_shifts.keys())[0])
                 index = s - 1
                 schedule.shifts[index] = shift
                 del schedule.bad_shifts[s]
                 if not schedule.bad_shifts:
                     self.parent.raise_frame(self.parent.export_frame)
                 else:
+                    self.combobox.set("")
                     self.corr()
 
 
