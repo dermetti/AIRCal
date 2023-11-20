@@ -1,23 +1,16 @@
-# shiftparse
-## Video Demo:  <URL HERE>
-## Description:
+# AIRCal
 
-### Basic Overview:
-Shiftparse is a program that will extract a shift schedule for a specific person from a PDF that contains the schedule of multiple coworkers in a tabular form. Shiftparse can export the individual schedule of a coworker as a PDF and/or an ICS file.
+## Nutzeranleitung:
 
-### Requirements:
-The PDF will need to adhere to a specific layout.
-The PDF will need to contain a line like "Schedule MONTH YEAR", while MONTH will need to be a word and YEAR a four-digit number.
-The schedule for all coworkers needs to contained in a table. Rows will need to contain from left to right: name of coworker, one empty cell, shift assignment for each day of the month (one cell per day)
-The first row of the table needs to contain from left to right: two empty cells, number of the day of the month followed by a period ("1." or "2.", etc)
-Shiftparse will need to know the abbreviations of all possible shifts such as they appear in the PDF as well as their start and end times. This is to allow for error correction of misspelled shift assignments and to create an individual ICS file for each coworker.
+### Übersicht:
+AIRCal ist ein Programm welches einen PDF Dienstplan ausliest und für einen einzelnen Mitarbeiter in eine ICS Datei umwandelt, welche in einem Kalenderprogramm importiert werden kann.
 
-### Executing shiftparse:
-To execute shiftparse from the command line type: `python project.py shedule.pdf` where shedule.pdf is the PDF file with the schedule that you want to extract an individual schedule from.
-Shiftparse will take a second to parse the PDF file. Shiftparse will check if the PDF contains a valid month and year and prompt the user to input that information if it may be erroneous.
-You will then be prompted to input your name. Shiftparse will check if your name is on the schedule and check if on each day of the month a valid shift is assigned. Shiftparse will prompt you to input a valid shift for each day that has an invalid or no shift assigned. Shiftparse will perform basic error checking and corrections if possible.
-Siftparse will then output a table with your individual schedule in the terminal and ask for confirmation, that the data extracted is indeed correct.
-After confirmation that the data shiftparse has extracted is correct shiftparse will ask you if you want to export the data as an individual PDF schedule, an ICS file or both.
+### Download:
+Die aktuellste Version von AIRCal kann [hier](https://github.com/dermetti/AIRCal/releases) heruntergeladen werden.
+Beim Download erscheint eine Warnung, dass das Programm verdächtig ist/derDownload blockiert wurde. Diese Warnung muss ignoriert/bestätigt werden um die Datei herunterzuladen.
+
+### AIRCal ausführen:
+Beim Ersten öffnen von AIRCal erscheint erneut eine Warnung welche auch ignoriert werden muss. Dies 
 
 ## Functions in shiftparse:
 

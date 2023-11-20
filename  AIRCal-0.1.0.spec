@@ -18,16 +18,13 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.datas,
     [],
+    exclude_binaries=True,
     name=' AIRCal-0.1.0',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    upx_exclude=[],
-    runtime_tmpdir=None,
     console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
@@ -36,9 +33,12 @@ exe = EXE(
     entitlements_file=None,
     icon=['AIRCal_icon.ico'],
 )
-app = BUNDLE(
+coll = COLLECT(
     exe,
-    name=' AIRCal-0.1.0.app',
-    icon='AIRCal_icon.ico',
-    bundle_identifier=None,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name=' AIRCal-0.1.0',
 )
