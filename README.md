@@ -23,11 +23,13 @@ Nach dem Entpacken der heruntergeladenen Datei kann diese in den Programme Ordne
 ### AIRCal verwenden:
 AIRCal benötigt als Eingaben den Namen des Nutzers, so wie er auf dem Dienstplan erscheint und den Dienstplan als PDF Datei. Wenn AIRCal nicht alle Dienste erfolgreich auslesen kann, wird der Nutzer evt. aufgefordert einzelne Tage manuell einzugeben. 
 
-Zuletzt erfolgt der Export des Dienstplans als ICS Datei. Diese ICS Datei kann in alle gängigen Kalenderprogramme importiert werden (in der Regel durch anklicken der ICS Datei).
+Zuletzt erfolgt der Export des Dienstplans als ICS Datei. Diese ICS Datei kann in alle gängigen Kalenderprogramme importiert werden, **in der Regel durch anklicken der ICS Datei**. Sollte dies nicht funktionieren können folgende Anleitungen evt. weiterhelfen:
 
 [Anleitung](https://support.apple.com/de-de/guide/calendar/icl1023/mac) für Apple Kalender (Desktop Version)
 
 [Anleitung](https://support.google.com/calendar/answer/37118?hl=de&co=GENIE.Platform%3DDesktop&oco=1) für Google Kalender (Web Version)
+
+[App](https://routinehub.co/shortcut/7005/) zum Import unter iOS
 
 ## Lizenz:
 
