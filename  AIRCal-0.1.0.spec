@@ -36,3 +36,9 @@ exe = EXE(
     entitlements_file=None,
     icon=['AIRCal_icon.ico'],
 )
+app = BUNDLE(
+    exe,
+    name=' AIRCal-0.1.0.app',
+    icon='AIRCal_icon.ico',
+    bundle_identifier=None,
+)

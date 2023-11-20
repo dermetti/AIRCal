@@ -1,0 +1,3 @@
+([(' AIRCal-0.1.0',
+   '/Users/mathias/Documents/AIRCal/dist/ AIRCal-0.1.0',
+   'EXECUTABLE')],)
