@@ -11,7 +11,7 @@ Die aktuellste Version von AIRCal kann [hier](https://github.com/dermetti/AIRCal
 
 Es stehen spezifische Versionen für macOS und Windows bereit. Achten sie darauf die richtige Version herunterzuladen
 
-Beim Download erscheint eine Warnung, dass das Programm verdächtig ist und der Download zunächts blockiert wurde. Diese Warnung muss bestätigt werden um die Datei herunterzuladen.
+Beim Download erscheint eine Warnung, dass das Programm verdächtig ist und der Download zunächst blockiert wurde. Diese Warnung muss bestätigt werden um die Datei herunterzuladen.
 
 ### AIRCal unter Windows installieren:
 Beim Ersten Öffnen von AIRCal erscheint erneut eine Warnung welche auch bestätigt werden muss. Nach dem Bestätigen werden Windows Nutzer durch die Installation geführt.
@@ -21,9 +21,9 @@ Beim Ersten Öffnen von AIRCal erscheint erneut eine Warnung welche auch bestät
 Nach dem Entpacken der heruntergeladenen Datei kann diese in den Programme Ordner verschoben werden (siehe [hier](https://www.mac-business-coaching.de/images/programme_ordner_auf_macintosh_hd_267C7105.png)). Zum Öffnen der Mac-App eines nicht verifizierten Entwicklers verwenden sie diese [Anleitung](https://support.apple.com/de-de/guide/mac-help/mh40616/14.0/mac/14.0). Diese Schritte sind nur beim ersten Ausführen von AIRCal notwendig.
 
 ### AIRCal verwenden:
-AIRCal benötigt als Eingaben den Namen des Nutzers, so wie er auf dem Dienstplan erscheint und den Dienstplan als PDF Datei. Wenn AIRCal nicht alle Dienste erfolgreich auslesen kann, wird der Nutzer evt. aufgefordert einzelne Tage manuell einzugeben. 
+AIRCal benötigt als Eingaben den Namen des Nutzers, so wie er auf dem Dienstplan erscheint und den Dienstplan als PDF Datei. Wenn AIRCal nicht alle Dienste erfolgreich auslesen kann, wird der Nutzer evtl. aufgefordert einzelne Tage manuell einzugeben. 
 
-Zuletzt erfolgt der Export des Dienstplans als ICS Datei. Diese ICS Datei kann in alle gängigen Kalenderprogramme importiert werden, **in der Regel durch anklicken der ICS Datei**. Sollte dies nicht funktionieren können folgende Anleitungen evt. weiterhelfen:
+Zuletzt erfolgt der Export des Dienstplans als ICS Datei. Diese ICS Datei kann in alle gängigen Kalenderprogramme importiert werden, **in der Regel durch anklicken der ICS Datei**. Sollte dies nicht funktionieren können folgende Anleitungen evtl. weiterhelfen:
 
 [Anleitung](https://support.apple.com/de-de/guide/calendar/icl1023/mac) für Apple Kalender (Desktop Version)
 
