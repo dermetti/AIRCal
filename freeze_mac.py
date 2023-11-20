@@ -5,6 +5,5 @@ PyInstaller.__main__.run([
     '--onefile',
     '--windowed',
     '-n AIRCal-0.1.0-macOS',
-    #'--add-data', 'AIRCal_icon.ico:.',
     '-iAIRCal_icon.ico'
     ])
