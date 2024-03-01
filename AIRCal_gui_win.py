@@ -5,13 +5,15 @@ from AIRCal_functions import *
 
 
 class Schedule:
-    def __init__(self, name=None, pdf_file=None, table=None, month=None, year=None, names=None, index=None, shifts=None, bad_shifts=None):
+    def __init__(self, name=None, pdf_file=None, table=None, month=None, year=None, names=None, firstshift=None, lastschift=None, index=None, shifts=None, bad_shifts=None):
         self.name = name
         self.pdf_file = pdf_file
         self.table = table
         self.month = month
         self.year = year
         self.names = names
+        self.firstshift = firstshift
+        self.lastshift = lastschift
         self.index = index
         self.shifts = shifts
         self.bad_shifts = bad_shifts
@@ -96,15 +98,15 @@ class Input_Frame(tk.Frame):
         else:
             self.error_message["text"] = ""
             schedule.name = self.entry1.get()
-            schedule.table, schedule.month, schedule.year, schedule.names, = parse_pdf(schedule.pdf_file)
-            if not schedule.table or not schedule.month or not schedule.year or not schedule.names:
+            schedule.table, schedule.month, schedule.year, schedule.names, schedule.firstshift, schedule.lastshift = parse_pdf(schedule.pdf_file)
+            if not schedule.table or not schedule.month or not schedule.year or not schedule.names or not schedule.firstshift or not schedule.lastshift:
                 self.error_message["text"] = "Fehler: PDF kann nicht gelesen werden"
             else:
                 schedule.index = check_name(schedule.name, schedule.names)
                 if not schedule.index:
                     self.parent.raise_frame(self.parent.name_frame)
                 else:
-                    schedule.shifts, schedule.bad_shifts = extract_schedule(schedule.table, schedule.index)
+                    schedule.shifts, schedule.bad_shifts = extract_schedule(schedule.table, schedule.index, schedule.firstshift, schedule.lastshift)
                     if schedule.bad_shifts:
                         self.parent.raise_frame(self.parent.shifts_frame)
                     else:

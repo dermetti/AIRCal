@@ -1,4 +1,5 @@
 import pdfplumber
+import tabula
 import re
 from fpdf import FPDF
 from ics import Calendar, Event
@@ -57,7 +58,7 @@ months_de = {
 
 
 # parser with pdfplumber
-def parse_pdf(f):
+def parse_pdf2(f):
     try:
         with pdfplumber.open(f) as pdf:
             page = pdf.pages[0]
@@ -80,6 +81,39 @@ def parse_pdf(f):
             return table, month, year, names
     except:
         return None, None, None, None
+    
+
+def parse_pdf(f):
+    try:
+        with pdfplumber.open(f) as pdf:
+            firstshift = 0
+            lastshift = 0
+            page = pdf.pages[0]
+            table_raw = page.extract_table({"vertical_strategy": "lines", "horizontal_strategy": "lines"})
+            table=[]
+            for line in table_raw:
+                if line[0]:
+                    table.append(line)
+            for line in table_raw:
+                if "1." and "2." and "3." in line:
+                    firstshift = line.index("1.")
+                    for pos in line[firstshift:]:
+                        if pos and "." in pos:
+                            lastshift = line.index(pos)
+            text = page.extract_text_simple(x_tolerance=3, y_tolerance=3)
+            matches = re.search(r"Dienstplan (\w.+) (\d{4})", text)
+            names = []
+            for line in table:
+                if line[0]:
+                    name = line[0]
+                    name = name.casefold()[0:7]
+                    if name[0:3] != "von":
+                        name = name.split()[0]
+                    names.append(name)
+            month, year = matches.groups()
+            return table, month, year, names, firstshift, lastshift
+    except:
+        return None, None, None, None
 
 
 def check_name(name, names):
@@ -90,19 +124,16 @@ def check_name(name, names):
         return None
      
 
-def extract_schedule(table, index):
-    days = []
-    for line in table:
-        days.append(len(line[4:-2]))
-    corr_days = max(set(days), key = days.count)
-    shifts = table[index][4:-2]
-    if len(shifts) != corr_days:
-        print("Nicht alle Tage konnten ausgelesen werden! ")
-    shifts, bad_shifts = check_data(shifts)
-    return shifts, bad_shifts
+def extract_schedule(table, index, firstshift, lastshift):
+    print(firstshift, lastshift)
+    shifts = table[index][firstshift:(lastshift + 1)]
+    print(shifts)
+    corr_shifts, bad_shifts = check_data(shifts)
+    return corr_shifts, bad_shifts
     
 
 def check_data(shifts):
+    length = len(shifts)
     i = -1
     bad_shifts = {}
     for shift in shifts:
@@ -111,8 +142,9 @@ def check_data(shifts):
             c = i
             com_shifts = shift.split()
             for s in com_shifts:
-                shifts[c] = s
-                c += 1
+                if c < length:
+                    shifts[c] = s
+                    c += 1
     i = -1
     for shift in shifts:
         i += 1
