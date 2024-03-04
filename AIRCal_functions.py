@@ -58,31 +58,6 @@ months_de = {
 
 
 # parser with pdfplumber
-def parse_pdf2(f):
-    try:
-        with pdfplumber.open(f) as pdf:
-            page = pdf.pages[0]
-            table_raw = page.extract_table({"vertical_strategy": "lines", "horizontal_strategy": "lines"})
-            table=[]
-            for line in table_raw:
-                if line[0]:
-                    table.append(line)
-            text = page.extract_text_simple(x_tolerance=3, y_tolerance=3)
-            matches = re.search(r"Dienstplan (\w.+) (\d{4})", text)
-            names = []
-            for line in table:
-                if line[0]:
-                    name = line[0]
-                    name = name.casefold()[0:7]
-                    if name[0:3] != "von":
-                        name = name.split()[0]
-                    names.append(name)
-            month, year = matches.groups()
-            return table, month, year, names
-    except:
-        return None, None, None, None
-    
-
 def parse_pdf(f):
     try:
         with pdfplumber.open(f) as pdf:
@@ -125,9 +100,7 @@ def check_name(name, names):
      
 
 def extract_schedule(table, index, firstshift, lastshift):
-    print(firstshift, lastshift)
     shifts = table[index][firstshift:(lastshift + 1)]
-    print(shifts)
     corr_shifts, bad_shifts = check_data(shifts)
     return corr_shifts, bad_shifts
     
