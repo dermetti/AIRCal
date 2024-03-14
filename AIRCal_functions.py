@@ -5,7 +5,7 @@ from ics import Calendar, Event
 from datetime import datetime, timedelta
 import pytz
 
-
+# put in db
 allowed_shifts = {'*9': [],
                   '*C': [],
                   'AK': ["07:00", "9"],
