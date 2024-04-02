@@ -5,7 +5,7 @@ from AIRCal_functions import *
 
 
 class Schedule:
-    def __init__(self, name=None, pdf_file=None, table=None, month=None, year=None, names=None, index=None, shifts=None, bad_shifts=None):
+    def __init__(self, name=None, pdf_file=None, table=None, month=None, year=None, names=None, index=None, shifts=None, bad_shifts=None, indexFirst=None):
         self.name = name
         self.pdf_file = pdf_file
         self.table = table
@@ -15,6 +15,7 @@ class Schedule:
         self.index = index
         self.shifts = shifts
         self.bad_shifts = bad_shifts
+        self.indexFirst = indexFirst
 
 schedule = Schedule()
 
@@ -96,7 +97,7 @@ class Input_Frame(tk.Frame):
         else:
             self.error_message["text"] = ""
             schedule.name = self.entry1.get()
-            schedule.table, schedule.month, schedule.year, schedule.names, = parse_pdf(schedule.pdf_file)
+            schedule.table, schedule.month, schedule.year, schedule.names, schedule.indexFirst = parse_pdf(schedule.pdf_file)
             if not schedule.table or not schedule.month or not schedule.year or not schedule.names:
                 self.error_message["text"] = "Fehler: PDF kann nicht gelesen werden"
             else:
@@ -104,7 +105,7 @@ class Input_Frame(tk.Frame):
                 if not schedule.index:
                     self.parent.raise_frame(self.parent.name_frame)
                 else:
-                    schedule.shifts, schedule.bad_shifts = extract_schedule(schedule.table, schedule.index)
+                    schedule.shifts, schedule.bad_shifts = extract_schedule(schedule.table, schedule.index, schedule.indexFirst)
                     if schedule.bad_shifts:
                         self.parent.raise_frame(self.parent.shifts_frame)
                     else:

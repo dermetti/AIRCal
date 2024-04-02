@@ -64,6 +64,8 @@ def parse_pdf(f):
             table_raw = page.extract_table({"vertical_strategy": "lines", "horizontal_strategy": "lines"})
             table=[]
             for line in table_raw:
+                if "1." and "2." and "3." in line:
+                    indexFirst = line.index("1.")
                 if line[0]:
                     table.append(line)
             text = page.extract_text_simple(x_tolerance=3, y_tolerance=3)
@@ -77,9 +79,9 @@ def parse_pdf(f):
                         name = name.split()[0]
                     names.append(name)
             month, year = matches.groups()
-            return table, month, year, names
+            return table, month, year, names, indexFirst
     except:
-        return None, None, None, None
+        return None, None, None, None, None
 
 
 def check_name(name, names):
@@ -90,12 +92,12 @@ def check_name(name, names):
         return None
      
 
-def extract_schedule(table, index):
+def extract_schedule(table, index, indexFirst):
     days = []
     for line in table:
-        days.append(len(line[4:-2]))
+        days.append(len(line[indexFirst:-2]))
     corr_days = max(set(days), key = days.count)
-    shifts = table[index][4:-2]
+    shifts = table[index][indexFirst:-2]
     if len(shifts) != corr_days:
         print("Nicht alle Tage konnten ausgelesen werden! ")
     shifts, bad_shifts = check_data(shifts)
